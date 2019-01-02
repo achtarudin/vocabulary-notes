@@ -12,18 +12,19 @@ app.use(cors());
 app.get('/api/hello', (req, res) => {
   res.send({ express: 'Hello From Express' });
 });
-app.post('/api/world', (req, res) => {
-  console.log(req.body);
-  var result = path.join(__dirname, '/build', 'index.html')
-  console.log("log the result variable", result);
-  
+app.post('/api/world', (req, res) => {  
   res.send(
-    `I received your POST request. This is what you sent me: ${req.body.post}`,
+    `I received your POST request. This is what you sent me: ${req.body.post}, ${app.get('env')}`,
   );
 });
 
+if (app.get('env') === 'development') {
+  console.log(app.get('env'));
+} else {
+  console.log(app.get('env'));
+}
 
-if (process.env.NODE_ENV === 'production') {
+if (app.get('env') === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, '/build')));
   // Handle React routing, return all requests to React app
@@ -32,4 +33,4 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`Listening on port ${port}`, app.get('env')));
