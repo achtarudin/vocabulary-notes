@@ -14,15 +14,9 @@ app.get('/api/hello', (req, res) => {
 });
 app.post('/api/world', (req, res) => {  
   res.send(
-    `I received your POST request. This is what you sent me: ${req.body.post}, ${app.get('env')}`,
+    `I received your POST request. This is what you sent me: ${req.body.post}}`,
   );
 });
-
-if (app.get('env') === 'development') {
-  console.log(app.get('env'));
-} else {
-  console.log(app.get('env'));
-}
 
 if (app.get('env') === 'production') {
   // Serve any static files
@@ -33,4 +27,4 @@ if (app.get('env') === 'production') {
   });
 }
 
-app.listen(port, () => console.log(`Listening on port ${port}`, app.get('env')));
+app.listen(port, () => console.log(`Listening on port ${port}`));
