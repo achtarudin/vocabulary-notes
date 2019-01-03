@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './../../App.css';
 
-class ComunicateToServer extends Component {
+ export class ComunicateToServer extends Component {
   state = {
     response: '',
     post: '',
@@ -54,4 +54,4 @@ class ComunicateToServer extends Component {
   }
 }
 
-export default ComunicateToServer;
+// export default ComunicateToServer;
