@@ -2,11 +2,14 @@
 import React, { Component }from 'react';
 import { Route, Link } from 'react-router-dom';
 import { Vocabulary } from './components/Vocabulary';
-import { Grammer } from './components/Grammer';
+import {Grammer}  from './components/Grammer';
 import { Listening } from './components/Listening';
 import {Topics} from './components/Testing-Pages/nestedPath'
 import { ComunicateToServer as Server } from './components/Testing-Pages/comunicateToServer';
+import { Child as ChildToParent } from './components/Testing-Pages/childToParent';
 import { Nav, NavItem, NavLink, Container } from 'reactstrap';
+import PropTypes from 'prop-types'
+// import Child from './components/Testing-Pages/childToParent'
 
 
 class App extends Component {
@@ -14,66 +17,126 @@ class App extends Component {
     super(props);
     this.state = {
       data: 'cabe',
-      dropdownOpen: false
+      dropdownOpen: false,
+      counter: 0,
+      pageVocabulary: true,
+      pageGrammer: false,
+      pageListening: false,
     }
-    this.toggle = this.toggle.bind(this);
-  }
-
-  toggle() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
+    this.update = this.update.bind(this);
+    this.path = this.path.bind(this)
   }
  
-  addActiveClass() {
-    console.log(window.location);
+  addActiveClass(path) {
+    return path === window.location.pathname
   }
+
   componentDidMount() {
-    this.addActiveClass();
+    this.addActiveClass()
+  }
+
+  path() {   
+    if (window.location.pathname === '/') {
+      this.setState({
+        pageVocabulary: true,
+        pageGrammer: false,
+        pageListening: false,
+      })
+    }
+    else if (window.location.pathname === '/grammer') {
+      this.setState({
+        pageVocabulary: false,
+        pageGrammer: true,
+        pageListening: false,
+      })
+    }
+    else {
+      this.setState({
+        pageVocabulary: false,
+        pageGrammer: false,
+        pageListening: true,
+      })
+    }
+  }
+
+  update(value) {
+    this.setState({
+      counter: value
+    });
   }
   render() {
     const { data } = this.state;    
     return (
       <div>
-        <br/>
+        <br />
         <Container>
           <Nav pills>
             <NavItem>
-              <NavLink href="/grammer" active={true}>Vocabulary -Notes</NavLink>
-              {/* <Link
-                className="nav-link active"
-                to="#">Vocabulary -Notes</Link> */}
+              <NavLink href="/" active>Vocabulary -Notes</NavLink>
             </NavItem>
           </Nav>
           <Nav tabs className="justify-content-center">
-            <NavItem>
+            <NavItem
+              onClick={(e) => this.path(e)}>
               <Link
-                className="nav-link active"
+                className={"nav-link " + (this.state.pageVocabulary ? 'active': '')}
                 to="/">Vocabulary</Link>
             </NavItem>
-            <NavItem>
-              <Link className="nav-link" to="/grammer">Grammer</Link>
+            <NavItem
+              onClick={(e) => this.path(e)}>
+              <Link
+                className={"nav-link " + (this.state.pageGrammer ? 'active' : '')}
+                to="/grammer">Grammer</Link>
             </NavItem>
-            <NavItem>
-              <Link className="nav-link" to="/listening">Listening</Link>
+            <NavItem
+              onClick={(e) => this.path(e)}>
+              <Link
+                className={"nav-link " + (this.state.pageListening ? 'active' : '')}
+                to="/listening">Listening</Link>
             </NavItem>
-            <NavItem>
+            <NavItem
+              onClick={(e) => this.path(e)}>
               <Link className="nav-link" to="/topics">Topics</Link>
             </NavItem>
-            <NavItem>
+            <NavItem
+              onClick={(e) => this.path(e)}>
               <Link className="nav-link" to="/server">Server</Link>
+            </NavItem>
+            <NavItem
+              onClick={(e) => this.path(e)}>
+              <Link className="nav-link" to="/child">Child</Link>
             </NavItem>
           </Nav>
         </Container>
+
+        <div>
+          {/* <span>{this.state.counter}</span> */}
+          {/* <ChildToParent sendData={this.update} /> */}
+        </div>
         
         
         <Route exact path="/" render={(props) => <Vocabulary {...props}  data={data}/>} />
         <Route path="/grammer" component={Grammer} />
         <Route path="/listening" component={Listening} />
         <Route path="/topics" component={Topics} />
-        <Route path="/server" render={() => <Server /> } />
+        <Route path="/server" render={() => <Server />} />
+        <Route path="/child" render={(props) => {
+          // console.log(props);
+          return (
+            <ChildToParent {...props} sendData={this.update} />
+          );
+          // <ChildToParent {...props} sendData={this.update} />
+        }  
+         }
+        />
+
       </div>
     );
   }
 }
 export default App;
+NavItem.propTypes = {
+  tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+  active: PropTypes.bool,
+  // pass in custom element to use
+}
